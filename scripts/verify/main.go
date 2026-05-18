@@ -9,6 +9,14 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
+// moon-dark muted (6e6a86) + dim — progress output only
+const dimMuted = "\033[2m\033[38;2;110;106;134m"
+
+// moon-dark love (eb6f92) + dim
+const dimLove = "\033[2m\033[38;2;235;111;146m"
+
+const reset = "\033[0m"
+
 func main() {
 	root := filepath.Join("..", "..")
 	styles := []string{
@@ -26,18 +34,18 @@ func main() {
 			glamour.WithWordWrap(72),
 		)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "FAIL %s: create renderer: %v\n", name, err)
+			fmt.Fprintf(os.Stderr, "%s  ✖ create renderer %s: %v%s\n", dimLove, name, err, reset)
 			os.Exit(1)
 		}
 		out, err := r.Render(md)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "FAIL %s: render: %v\n", name, err)
+			fmt.Fprintf(os.Stderr, "%s  ✖ render %s: %v%s\n", dimLove, name, err, reset)
 			os.Exit(1)
 		}
 		if len(out) < 10 {
-			fmt.Fprintf(os.Stderr, "FAIL %s: output too short\n", name)
+			fmt.Fprintf(os.Stderr, "%s  ✖ %s: output too short%s\n", dimLove, name, reset)
 			os.Exit(1)
 		}
-		fmt.Printf("OK %s (%d bytes)\n", name, len(out))
+		fmt.Fprintf(os.Stderr, "%s  verified %s (%d bytes)%s\n", dimMuted, name, len(out), reset)
 	}
 }

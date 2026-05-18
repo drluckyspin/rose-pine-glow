@@ -8,6 +8,7 @@
 #   make build       — regenerate styles/*.json
 #   make test        — validate JSON + Glamour render
 #   make screenshots — regenerate gallery PNGs
+#   make install     — install styles + configure glow.yml
 #   make preview     — render examples/sample.md with glow
 #   make clean       — remove Python caches
 # -----------------------------------------------------------------------------------------------------------
@@ -33,59 +34,67 @@ STYLE_FILE := $(STYLES_DIR)/$(STYLE).json
 # -----------------------------------------------------------------------------------------------------------
 
 .PHONY: help build check clean test screenshots preview install
+.PHONY: ensure_jq ensure_python ensure_go ensure_glow
 
 .PHONY: help ## Show this help message
 help:
+	@$(LOGGER) log_separator
 	@$(LOGGER) log_banner
 	@$(LOGGER) log_info "Available make targets ($(PROJECT_NAME)):"
 	@echo ""
 	@grep -E \
 		'^.PHONY: .*?## .*$$' $(MAKEFILE_LIST) | \
 		sort | \
-		awk 'BEGIN {FS = ".PHONY: |## "}; {printf " %-22s - %s\n", $$2, $$3}'
+		awk 'BEGIN {FS = ".PHONY: |## "}; {printf "  %-22s - %s\n", $$2, $$3}'
 	@echo ""
 	@$(LOGGER) log_info "Quick start"
-	@echo "  make check && make build && make test && make install"
+	@$(LOGGER) log_dim "make check && make build && make test && make install"
 
 # -----------------------------------------------------------------------------------------------------------
-# Tool checks
+# Tool checks (ensure_* = silent deps; check_* = logged for make check)
 # -----------------------------------------------------------------------------------------------------------
 
-check_jq:
-	@if ! command -v jq >/dev/null 2>&1; then \
+ensure_jq:
+	@command -v jq >/dev/null 2>&1 || { \
 		$(LOGGER) log_error "jq is not installed (brew install jq)"; \
 		exit 1; \
-	else \
-		$(LOGGER) log_info_dim "$$(jq --version) is installed."; \
-	fi
+	}
 
-check_python:
-	@if ! command -v python3 >/dev/null 2>&1; then \
+check_jq: ensure_jq
+	@$(LOGGER) log_progress "jq $$(jq --version) is installed."
+
+ensure_python:
+	@command -v python3 >/dev/null 2>&1 || { \
 		$(LOGGER) log_error "python3 is not installed (brew install python)"; \
 		exit 1; \
-	else \
-		$(LOGGER) log_info_dim "python3 $$(python3 --version 2>&1 | cut -d' ' -f2) is installed."; \
-	fi
+	}
 
-check_go:
-	@if ! command -v go >/dev/null 2>&1; then \
+check_python: ensure_python
+	@$(LOGGER) log_progress "python3 $$(python3 --version 2>&1 | cut -d' ' -f2) is installed."
+
+ensure_go:
+	@command -v go >/dev/null 2>&1 || { \
 		$(LOGGER) log_error "go is not installed (brew install go)"; \
 		exit 1; \
-	else \
-		$(LOGGER) log_info_dim "go $$(go version | awk '{print $$3}') is installed."; \
-	fi
+	}
+
+check_go: ensure_go
+	@$(LOGGER) log_progress "go $$(go version | awk '{print $$3}') is installed."
+
+ensure_glow:
+	@command -v glow >/dev/null 2>&1 || { \
+		$(LOGGER) log_error "glow is not installed (brew install glow)"; \
+		exit 1; \
+	}
 
 check_glow:
-	@if ! command -v glow >/dev/null 2>&1; then \
-		$(LOGGER) log_warning "glow is not installed — optional for make preview (brew install glow)"; \
-	else \
-		$(LOGGER) log_info_dim "glow $$(glow --version 2>&1 | head -1) is installed."; \
-	fi
+	@$(MAKE) ensure_glow
+	@$(LOGGER) log_progress "glow $$(glow --version 2>&1 | head -1) is installed."
 
-check_pillow:
-	@python3 -c "import PIL" 2>/dev/null || { \
+check_pillow: ensure_python
+	@if ! python3 -c "import PIL" 2>/dev/null; then \
 		$(LOGGER) log_warning "Pillow not installed — required for make screenshots (pip install pillow)"; \
-	}
+	fi
 
 .PHONY: check ## Verify required tools (jq, python3, go)
 check:
@@ -106,21 +115,19 @@ check:
 # -----------------------------------------------------------------------------------------------------------
 
 .PHONY: build ## Regenerate styles/*.json from scripts/build-styles.py
-build: check_python
+build: ensure_python
 	@$(LOGGER) log_separator
 	@$(LOGGER) log_info "Building Glamour style JSON"
 	@python3 $(SCRIPTS_DIR)/build-styles.py
 	@$(LOGGER) log_success "Styles written to styles/"
 
-validate_json: check_jq
-	@$(LOGGER) log_info_dim "Validating JSON syntax..."
-	@jq empty $(STYLES_DIR)/*.json
-	@$(LOGGER) log_info_dim "All style JSON files are valid."
-
 .PHONY: test ## Validate JSON and verify Glamour can render each style
-test: check_jq check_go validate_json
+test: ensure_jq ensure_go
 	@$(LOGGER) log_separator
-	@$(LOGGER) log_info "Verifying Glamour rendering"
+	@$(LOGGER) log_info "Testing styles"
+	@$(LOGGER) log_progress "Validating JSON syntax..."
+	@jq empty $(STYLES_DIR)/*.json
+	@$(LOGGER) log_progress "All style JSON files are valid."
 	@cd $(VERIFY_DIR) && go run .
 	@$(LOGGER) log_success "All styles render successfully"
 
@@ -129,7 +136,7 @@ test: check_jq check_go validate_json
 # -----------------------------------------------------------------------------------------------------------
 
 .PHONY: screenshots ## Regenerate screenshots/*.png (requires Pillow)
-screenshots: check_python
+screenshots: ensure_python
 	@$(LOGGER) log_separator
 	@$(LOGGER) log_info "Generating screenshot PNGs"
 	@python3 -c "import PIL" 2>/dev/null || { \
@@ -140,7 +147,8 @@ screenshots: check_python
 	@$(LOGGER) log_success "Screenshots written to screenshots/"
 
 .PHONY: install ## Install styles to ~/.config/glow and configure glow.yml (interactive)
-install: check_glow
+install: ensure_glow
+	@$(LOGGER) log_separator
 	@if [ ! -f "$(STYLES_DIR)/rose-pine.json" ]; then \
 		$(LOGGER) log_warning "Styles missing — running make build"; \
 		$(MAKE) build; \
@@ -150,15 +158,12 @@ install: check_glow
 		bash $(SCRIPTS_DIR)/install.bash $(INSTALL_FLAGS)
 
 .PHONY: preview ## Preview sample markdown with glow (STYLE=rose-pine-moon-dark)
-preview: check_glow
+preview: ensure_glow
 	@if [ ! -f "$(STYLE_FILE)" ]; then \
 		$(LOGGER) log_error "Style not found: $(STYLE_FILE)"; \
 		exit 1; \
 	fi
-	@if ! command -v glow >/dev/null 2>&1; then \
-		$(LOGGER) log_error "glow is required for preview"; \
-		exit 1; \
-	fi
+	@$(LOGGER) log_separator
 	@$(LOGGER) log_info "Previewing $(SAMPLE_MD) with $(STYLE).json"
 	@glow -s "$(STYLE_FILE)" "$(SAMPLE_MD)" --pager=false
 
@@ -170,7 +175,9 @@ preview: check_glow
 clean:
 	@$(LOGGER) log_separator
 	@$(LOGGER) log_info "Cleaning artifacts"
+	@$(LOGGER) log_progress "Removing Python __pycache__ directories"
 	@find $(COMMON_MAKEFILE_DIR) -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	@$(LOGGER) log_progress "Clearing Go build and test caches"
 	@rm -rf $(VERIFY_DIR)/go.sum.bak 2>/dev/null || true
 	@go clean -cache -testcache 2>/dev/null || true
 	@$(LOGGER) log_success "Clean complete"

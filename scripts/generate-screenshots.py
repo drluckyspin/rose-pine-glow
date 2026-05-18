@@ -2,7 +2,11 @@
 #!/usr/bin/env python3
 """Generate README gallery previews (terminal-style PNGs)."""
 
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from rp_log import info_dim  # noqa: E402
 
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -131,7 +135,7 @@ def render(name: str, v: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f"{name}.png"
     img.save(path)
-    print(f"wrote {path}")
+    info_dim(f"wrote {path.name}")
 
 
 def main() -> None:

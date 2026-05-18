@@ -2,7 +2,11 @@
 """Generate Glamour JSON styles from Rosé Pine palette roles."""
 
 import json
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from rp_log import info_dim  # noqa: E402
 
 PALETTES = {
     "rose-pine": {
@@ -169,7 +173,7 @@ def main() -> None:
             json.dumps(build_style(palette), indent=2) + "\n",
             encoding="utf-8",
         )
-        print(f"wrote {path}")
+        info_dim(f"wrote {path.name}")
 
 
 if __name__ == "__main__":

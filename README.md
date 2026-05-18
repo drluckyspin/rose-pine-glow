@@ -19,45 +19,48 @@ See **[palette comparison](docs/palette-comparison.html)** for a visual guide to
 
 1. Install [Glow](https://github.com/charmbracelet/glow#installation) (for example: `brew install glow` on macOS).
 
-2. Clone this repository (or download a single JSON from [`styles/`](styles/)).
-
-3. Copy the styles into a directory Glow can reference:
+2. Clone this repository and run the installer:
 
    ```bash
-   mkdir -p ~/.config/glow/styles
-   cp styles/*.json ~/.config/glow/styles/
+   make install
    ```
 
-   On macOS, Glow’s config file is often `~/Library/Preferences/glow/glow.yml`. Run `glow config` to open or create it.
+   The interactive installer will:
 
-4. Set your default style (pick one):
+   - Copy all four style JSON files to `~/.config/glow/styles/` (or a path you choose)
+   - Ask which variant to use as your default (default: **rose-pine-moon-dark**)
+   - Set word-wrap width and whether to disable the pager in `glow.yml`
+   - Back up an existing config to `glow.yml.bak` before writing changes
 
-   - **Config file** — merge from [`glow.example.yml`](glow.example.yml) or add:
+   On macOS, `glow.yml` is usually under `~/Library/Preferences/glow/` or `~/Library/Application Support/glow/`. The installer auto-detects an existing file.
 
-     ```yaml
-     style: "~/.config/glow/styles/rose-pine-moon.json"
-     width: 80
-     ```
-
-   - **Environment variable:**
-
-     ```bash
-     export GLOW_STYLE="$HOME/.config/glow/styles/rose-pine-moon.json"
-     ```
-
-   - **One-off:**
-
-     ```bash
-     glow -s ~/.config/glow/styles/rose-pine.json README.md
-     ```
-
-5. Browse markdown in the TUI: run `glow` in any directory (uses the same `style` from `glow.yml`).
-
-6. Preview the sample fixture:
+   **Non-interactive** (CI or scripting):
 
    ```bash
-   glow -s styles/rose-pine-moon.json examples/sample.md
+   make install INSTALL_FLAGS="--yes" INSTALL_STYLE=rose-pine-moon-dark
    ```
+
+   Or run the script directly:
+
+   ```bash
+   ./scripts/install.bash --yes --style rose-pine-moon-dark
+   ```
+
+   | Flag / variable | Purpose |
+   | ----------------- | ------- |
+   | `--yes` / `INSTALL_FLAGS="--yes"` | Accept defaults (styles dir, moon-dark, width 80, pager off, update config) |
+   | `--style NAME` / `INSTALL_STYLE` | Default variant (`rose-pine`, `rose-pine-moon`, `rose-pine-moon-dark`, `rose-pine-dawn`) |
+   | `--styles-dir PATH` / `GLOW_STYLES_DIR` | Where to copy JSON styles |
+   | `--config PATH` / `GLOW_CONFIG_FILE` | Path to `glow.yml` |
+   | `make install` | Runs `make build` first if styles are missing |
+
+3. Browse markdown with `glow` (TUI) or `glow README.md`. For a one-off style:
+
+   ```bash
+   glow -s ~/.config/glow/styles/rose-pine-dawn.json README.md
+   ```
+
+   See [`glow.example.yml`](glow.example.yml) for a minimal config snippet you can merge into `glow.yml`.
 
 ### Scripting
 
@@ -92,15 +95,20 @@ When piping or redirecting output (`glow doc.md | head`, `> file.txt`), add `--p
 
 ## Developing
 
-Requires `jq`, `python3`, and `go` (`brew install jq python go`). Optional: `glow` for `make preview`, Pillow for `make screenshots`.
+Requires `jq`, `python3`, and `go` (`brew install jq python go`). Optional: `glow` for `make preview`, Pillow for `make screenshots` (`pip install pillow`).
 
 ```bash
-make check    # verify tools
-make build    # regenerate styles/*.json from scripts/build-styles.py
-make test     # validate JSON + Glamour render
-make screenshots   # gallery PNGs (pip install pillow)
-make preview STYLE=rose-pine-moon-dark   # terminal preview
+make help       # list targets (Rosé Pine–themed output)
+make check      # verify tools
+make build      # regenerate styles/*.json from scripts/build-styles.py
+make test       # validate JSON + Glamour render (scripts/verify)
+make install    # copy styles + configure glow.yml
+make screenshots   # regenerate gallery PNGs
+make preview STYLE=rose-pine-moon-dark   # preview examples/sample.md
+make clean      # remove Python caches and Go test cache
 ```
+
+Styles are generated from palette definitions in `scripts/build-styles.py`; edit that file (or the palettes inside it) rather than hand-editing JSON when changing colors.
 
 ## Thanks to
 
