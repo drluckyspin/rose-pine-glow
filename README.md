@@ -15,6 +15,8 @@ Glamour styles for [**Glow**](https://github.com/charmbracelet/glow), the termin
 
 See **[palette comparison](docs/palette-comparison.html)** for a visual guide to how the variants differ.
 
+![alt text](screenshots/glow-example.png)
+
 ## Usage
 
 1. Install [Glow](https://github.com/charmbracelet/glow#installation) (for example: `brew install glow` on macOS).
