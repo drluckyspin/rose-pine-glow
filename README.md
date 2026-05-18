@@ -20,6 +20,14 @@ See **[palette comparison](docs/palette-comparison.html)** for a visual guide to
 
 ![alt text](screenshots/glow-example.png)
 
+## TL;DR
+
+```bash
+brew install glow
+make check
+make install
+```
+
 ## Usage
 
 1. Install [Glow](https://github.com/charmbracelet/glow#installation) (for example: `brew install glow` on macOS).
