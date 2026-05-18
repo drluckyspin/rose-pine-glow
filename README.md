@@ -16,7 +16,7 @@
 
 Glamour styles for [**Glow**](https://github.com/charmbracelet/glow), the terminal markdown reader from Charm. Colors follow the official [**Rosé Pine**](https://rosepinetheme.com/) palette (main, moon, moon dark, and dawn), with syntax roles aligned to [rose-pine-bat](https://github.com/drluckyspin/rose-pine-bat).
 
-See **[palette comparison](docs/palette-comparison.html)** for a visual guide to how the variants differ.
+See **[palette comparison](screenshots/palette-full.png)** for a visual guide to how the variants differ.
 
 ![alt text](screenshots/glow-example.png)
 
