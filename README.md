@@ -1,12 +1,6 @@
 <!-- markdownlint-disable MD041 -->
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/rose-pine/rose-pine-glow?label=release&color=6e6a86&logo=github&style=for-the-badge" alt="Latest Release" />
-  <img src="https://img.shields.io/badge/license-MIT-9ccfd8?style=for-the-badge" alt="MIT License" />
-  <img src="https://img.shields.io/github/actions/workflow/status/rose-pine/rose-pine-glow/ci.yml?branch=main&label=CI&logo=githubactions&logoColor=white&style=for-the-badge" alt="CI Status" />
-</p>
-
-<p align="center">
     <img src="https://github.com/rose-pine/rose-pine-theme/raw/main/assets/icon.png" width="80" alt="" />
     <h2 align="center">Rosé Pine for Glow</h2>
 </p>
