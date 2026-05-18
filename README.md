@@ -115,7 +115,6 @@ Styles are generated from palette definitions in `scripts/build-styles.py`; edit
 - [charmbracelet/glow](https://github.com/charmbracelet/glow) for Glow
 - [charmbracelet/glamour](https://github.com/charmbracelet/glamour) for terminal markdown styling
 - [Rosé Pine](https://github.com/rose-pine) for the palette
-- [drluckyspin/rose-pine-bat](https://github.com/drluckyspin/rose-pine-bat) for syntax color mapping inspiration
 
 ## Contributing
 
