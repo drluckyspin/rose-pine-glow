@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+  Rosé Pine Glow — palette comparison
+  Official palette: https://rosepinetheme.com/
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rosé Pine Glow — palette comparison</title>
+  <meta name="description" content="Rosé Pine Glow palette comparison. Official Rosé Pine palette: https://rosepinetheme.com/" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      margin: 0;
+      padding: 2rem;
+      background: #111;
+      color: #e0def4;
+    }
+    h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.5rem; }
+    h2 {
+      font-size: 1.05rem;
+      margin: 2.5rem 0 1rem;
+      color: #c4a7e7;
+      border-bottom: 1px solid #393552;
+      padding-bottom: 0.5rem;
+    }
+    p.intro { color: #908caa; max-width: 56rem; line-height: 1.55; margin: 0 0 1.5rem; }
+    p.intro a { color: #9ccfd8; }
+    p.intro a:hover { color: #c4a7e7; }
+    .grid {
+      display: grid;
+      gap: 1.25rem;
+      max-width: 72rem;
+    }
+    .grid.dark { grid-template-columns: repeat(3, 1fr); }
+    .grid.dawn,
+    .grid.shared { grid-template-columns: 1fr; max-width: 24rem; }
+    .grid.shared { margin-top: 1.5rem; }
+    @media (max-width: 900px) { .grid.dark { grid-template-columns: 1fr; } }
+    section {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #393552;
+    }
+    section header {
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    section header small {
+      display: block;
+      font-weight: 400;
+      font-size: 0.72rem;
+      opacity: 0.85;
+      margin-top: 0.25rem;
+    }
+    .swatch {
+      display: flex;
+      align-items: stretch;
+      min-height: 3.5rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .chip { width: 4.5rem; flex-shrink: 0; }
+    .meta {
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+    }
+    .meta.dark-meta {
+      background: #1a1826;
+      color: #e0def4;
+    }
+    .meta.dawn-meta {
+      background: #f2e9e1;
+      color: #464261;
+    }
+    .role { font-weight: 600; font-size: 0.8rem; }
+    .human { font-size: 0.75rem; margin-top: 0.25rem; line-height: 1.35; }
+    .note {
+      margin-top: 1.25rem;
+      padding: 0.85rem 1rem;
+      background: #232136;
+      border-radius: 8px;
+      border-left: 4px solid #ea9a97;
+      max-width: 56rem;
+      line-height: 1.5;
+      font-size: 0.8rem;
+    }
+    .note strong { color: #f6c177; }
+    body.dawn-preview {
+      background: #faf4ed;
+      color: #464261;
+    }
+    body.dawn-preview h2 { color: #907aa9; border-color: #f2e9e1; }
+    body.dawn-preview p.intro { color: #797593; }
+    body.dawn-preview .note {
+      background: #fffaf3;
+      border-left-color: #b4637a;
+    }
+    body.dawn-preview .note strong { color: #ea9d34; }
+    body.dawn-preview section { border-color: #f2e9e1; }
+  </style>
+</head>
+<body>
+  <h1>Rosé Pine Glow — Palette Comparison</h1>
+  <p class="intro">
+    Colors from the official <a href="https://rosepinetheme.com/">Rosé Pine</a> palette.
+    Each swatch shows a color with a plain-English name and a text sample in that color.
+    Dark variants share the same accent colors except where noted; backgrounds differ.
+  </p>
+
+  <h2>Dark variants</h2>
+  <p class="intro">
+    <strong>Main</strong> — official Rosé Pine.
+    <strong>Moon</strong> — official Moon (lighter base).
+    <strong>Moon Dark</strong> — moon accents on a deeper main base.
+    Also <a href="https://github.com/drluckyspin/rose-pine-bat" style="color:#3e8fb0">matches rose-pine-bat</a>.
+  </p>
+
+  <div class="grid dark" id="dark-columns"></div>
+
+  <div class="grid shared" id="dark-shared"></div>
+
+  <h2>Dawn (light)</h2>
+  <p class="intro">
+  Dawn is a separate light theme — warm cream background with darker text and muted accents.
+  </p>
+
+  <div class="grid dawn" id="dawn-column"></div>
+  <script>
+    const darkVariants = {
+      main: {
+        label: "Main",
+        file: "rose-pine.json",
+        headerBg: "#191724",
+        headerFg: "#e0def4",
+        subtitle: "Official main",
+        colors: {
+          base: ["#191724", "Deep purple-black"],
+          surface: ["#1f1d2e", "Dark plum panel"],
+          overlay: ["#26233a", "Muted violet line"],
+          rose: ["#ebbcba", "Dusty pink"],
+          pine: ["#31748f", "Deep teal"],
+        },
+      },
+      moon: {
+        label: "Moon",
+        file: "rose-pine-moon.json",
+        headerBg: "#232136",
+        headerFg: "#e0def4",
+        subtitle: "Official moon",
+        colors: {
+          base: ["#232136", "Softer blue-violet night"],
+          surface: ["#2a273f", "Lifted purple panel"],
+          overlay: ["#393552", "Clearer violet-gray line"],
+          rose: ["#ea9a97", "Warmer coral-pink"],
+          pine: ["#3e8fb0", "Brighter sky-teal"],
+        },
+      },
+      moonDark: {
+        label: "Moon Dark",
+        file: "rose-pine-moon-dark.json",
+        headerBg: "#191724",
+        headerFg: "#e0def4",
+        subtitle: "Moon accents, main base",
+        colors: {
+          base: ["#191724", "Deep purple-black"],
+          surface: ["#2a273f", "Lifted purple panel"],
+          overlay: ["#26233a", "Muted violet line"],
+          rose: ["#ea9a97", "Warmer coral-pink"],
+          pine: ["#3e8fb0", "Brighter sky-teal"],
+        },
+      },
+    };
+
+    const sharedDark = [
+      ["text", "#e0def4", "Soft lavender white"],
+      ["love", "#eb6f92", "Pink-red headings"],
+      ["gold", "#f6c177", "Warm gold strings"],
+      ["foam", "#9ccfd8", "Cool aqua types"],
+      ["iris", "#c4a7e7", "Soft purple tags"],
+      ["muted", "#6e6a86", "Gray-violet comments"],
+      ["subtle", "#908caa", "Mauve gray operators"],
+    ];
+
+    const dawnRoles = [
+      ["base", "#faf4ed", "Warm cream"],
+      ["surface", "#fffaf3", "Soft white panel"],
+      ["overlay", "#f2e9e1", "Pale sand border"],
+      ["text", "#464261", "Dark blue-gray text"],
+      ["love", "#b4637a", "Muted rose headings"],
+      ["gold", "#ea9d34", "Amber strings"],
+      ["rose", "#d7827e", "Terracotta accent"],
+      ["pine", "#286983", "Deep teal links"],
+      ["foam", "#56949f", "Slate aqua types"],
+      ["iris", "#907aa9", "Dusty purple tags"],
+      ["muted", "#9893a5", "Gray-lilac comments"],
+      ["subtle", "#797593", "Mauve operators"],
+    ];
+
+    function swatch(color, role, human, theme) {
+      const metaClass = theme === "dawn" ? "meta dawn-meta" : "meta dark-meta";
+      return `<div class="swatch">
+        <div class="chip" style="background:${color}"></div>
+        <div class="${metaClass}">
+          <span class="role">${role}</span>
+          <span class="human" style="color:${color}">${human}</span>
+        </div>
+      </div>`;
+    }
+
+    function column(v, theme) {
+      const roles = Object.entries(v.colors);
+      return `<section>
+        <header style="background:${v.headerBg};color:${v.headerFg}">
+          ${v.label}
+          <small>${v.subtitle}<br>${v.file}</small>
+        </header>
+        ${roles.map(([role, [hex, name]]) => swatch(hex, role, name, theme)).join("")}
+      </section>`;
+    }
+
+    document.getElementById("dark-columns").innerHTML =
+      Object.values(darkVariants).map((v) => column(v, "dark")).join("");
+
+    document.getElementById("dark-shared").innerHTML = `<section>
+      <header style="background:#232136;color:#e0def4">
+        Shared (all dark variants)
+        <small>Main, Moon, and Moon Dark use the same colors for these roles</small>
+      </header>
+      ${sharedDark.map(([role, hex, name]) => swatch(hex, role, name, "dark")).join("")}
+    </section>`;
+
+    document.getElementById("dawn-column").innerHTML = `<section>
+      <header style="background:#faf4ed;color:#464261">
+        Dawn
+        <small>Light theme · rose-pine-dawn.json</small>
+      </header>
+      ${dawnRoles.map(([role, hex, name]) => swatch(hex, role, name, "dawn")).join("")}
+    </section>`;
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Copy relevant lines into your glow.yml (run `glow config` to open it).
+# On macOS the default path is often ~/Library/Preferences/glow/glow.yml
+
+# Moon Dark matches rose-pine-bat; use rose-pine-moon.json for canonical moon base
+style: "~/.config/glow/styles/rose-pine-moon-dark.json"
+width: 80
